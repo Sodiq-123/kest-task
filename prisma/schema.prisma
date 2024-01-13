@@ -1,0 +1,57 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum DroneModel {
+  LIGHTWEIGHT
+  MIDDLEWEIGHT
+  CRUISERWEIGHT
+  HEAVYWEIGHT
+}
+
+enum DroneState {
+  IDLE
+  LOADING
+  LOADED
+  DELIVERING
+  DELIVERED
+  RETURNING
+}
+
+model Drone {
+  id               String       @id @default(uuid())
+  serialNo         String       @unique @map("serial_no")
+  model            DroneModel
+  weightLimit      Decimal      @db.Decimal(10, 2) @map("weight_limit")//(500kg max);
+  remainingWeight  Decimal      @db.Decimal(10, 2) @map("remaining_weight")
+  batteryCapacity  Int          @map("battery_capacity")
+  remainingBattery Int          @map("remaining_battery")
+  state            DroneState   @default(IDLE)
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt     @map("updated_at")
+  medications      Medication[]
+
+  @@map("drones")
+}
+
+model Medication {
+  id        String   @id @default(uuid())
+  droneId   String   @map("drone_id")
+  name      String   @unique //(allowed only letters, numbers, ‘-‘, ‘_’);
+  weight    Decimal  @db.Decimal(10, 2)
+  code      String   @unique //(allowed only upper case letters, underscore and numbers);
+  image     String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt      @map("updated_at")
+  Drone     Drone    @relation(fields: [droneId], references: [id])
+
+  @@map("medications")
+}
