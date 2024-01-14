@@ -83,8 +83,8 @@ While implementing the solution, the following requirements should be considered
 1. Clone the repository.
 
 ```bash
-git clone https://github.com/Sodiq-123/techinoverTest.git
-cd techinoverTest
+git clone https://github.com/Sodiq-123/kest-task.git
+cd kest-task
 ```
 
 2. Install dependencies.
